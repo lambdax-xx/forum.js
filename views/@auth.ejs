@@ -22,8 +22,8 @@
 			</script>
 		<% } %>
 	<% } else { %>
-		<input type="text" id="userName" placeHolder="用户名">
-		<input type="password" id="userPassword" placeHolder="密码">
+		<input type="text" id="loginNameOrEmail" placeHolder="用户名/邮箱">
+		<input type="password" id="loginPassword" placeHolder="密码">
 		<button onclick="login.call(this)">登录</button>
 		<button onclick="openRegDlg.call(this)">注册</button>
 		<div class="dialog-closed" id="regDlg">
@@ -36,6 +36,9 @@
 					<label>用户名：</label><input type="text" id="regName"><p>
 					<label>密码：<span class="nbsp1"/></label><input type="password" id="regPassword"><p>
 					<label><span class="nbsp4"></label><input type="password" id="regPassword2"><p>
+					<label>邮箱：<span class="nbsp1"/></label><input type="email" id="regEmail"><p>
+					<label>验证码：</label><input type="text" id="regCaptchaCode"><p>
+					<label><span class="nbsp4"></label><img id="regCaptchaImage" src="/captcha/image"><p>
 					<button onclick="register(this);">确认</button> 
 					<button onclick="closeRegDlg();">取消</button>
 				</div>

@@ -11,10 +11,26 @@ db.query(db.sql(function () { /*
 		cts timestamp not null,
 		uts timestamp default current_timestamp no update current_timestamp,
 		primary key (id),
-		key (name)
+		key (name),
+		key (email)
 	)
 */}), function(error) {
 	if (!error)
 		exports.valid = true;
 });
 
+exports.login = function (name, password, callback) {
+
+	if (!name)
+		return '没有用户名字'
+
+	db.query(db.format("select * from users where name='{1}'", name), function (error, result, fields) {
+		if (error)
+			throw new Error(error);
+		callback(result[0]);
+	});
+}
+
+exports.register = function (name, password, email) {
+
+}

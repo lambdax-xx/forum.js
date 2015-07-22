@@ -31,10 +31,7 @@ app.use(express.static(__dirname + '/public'));
 
 require('./helpers.js');
 require('./ejs.js')
-
-var router = require('./router');
-
-app.use(router);
+require('./router.js');
 
 app.listen(config.port, function (error) {
 	if (error)

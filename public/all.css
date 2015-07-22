@@ -113,8 +113,11 @@
 	float: right;
 }
 
-.auth > input {
-	width: 80px;
+.auth > input[type="text"] {
+	width: 120px;
 }
 
+.auth > input[type="password"] {
+	width: 60px;
+}
 
