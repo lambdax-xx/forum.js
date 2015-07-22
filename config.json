@@ -1,0 +1,14 @@
+{
+	"db_user": "root",
+	"db_password": "123456",
+	"db": "forum_db",
+
+	"port": "3001",
+
+	"topicsPrePage": "32",
+	"articlesPrePage": "16", 
+
+	"appName": "forum.js",
+	"htmlTitle": null,
+	"logoCaption": null
+}

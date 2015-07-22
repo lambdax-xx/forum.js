@@ -1,0 +1,120 @@
+.toolbar {
+	position: fixed;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	height: 32px;
+	padding: 3px;
+	border-bottom-style: solid;
+}
+
+.main {
+	margin-top: 40px;
+	text-align: center;
+	width: calc(100% - 10px);
+	padding: 5px;
+}
+
+.dialog-opened, 
+.dialog-closed {
+	position: fixed;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	background: rgba(128, 128, 128, 0.5);
+	z-index: 99;
+}
+
+.dialog-opened {
+	display: block;
+}
+
+.dialog-closed {
+	display: none;
+}
+
+.dialog {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 128px;
+	border-style: solid;
+	border-radius: 10px;
+	border-width: 1px;
+	border-color: gray;
+	background: white;
+	width: 320px;
+	-webkit-box-shadow:0 0 10px gray;  
+	box-shadow: 0 0 10px gray;
+
+	text-align: center;
+	font-size: 11pt;
+
+	padding: 5px;
+
+	vertical-align: middle;
+}
+
+.dialog .caption {
+	display: block;
+	border-radius: 5px;
+	width: calc(100% - 32px);
+	background : silver;
+	padding: 4px 8px;
+	font-weight: bold;
+	font-size: 10pt;
+	padding-left: 24px;
+}
+
+.dialog .caption .btn-cancel {
+	width: 16px;
+	height: 16px;
+	float: right;
+	color: red;
+	padding: 0px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.dialog .main {
+	margin: 0px;
+	text-align: center;
+	width: 100%;
+	padding: 3px;
+}
+
+.x::before {
+	font-style: normal;
+	font-family: sans-serif;
+	content: "×";
+}
+
+.nbsp1::before {
+	color: transparent;
+	content: "空"
+}
+
+.nbsp2::before {
+	color: transparent;
+	content: "空格"
+}
+
+.nbsp3::before {
+	color: transparent;
+	content: "空格空"
+}
+
+.nbsp4::before {
+	color: transparent;
+	content: "空格空格"
+}
+
+.auth {
+	float: right;
+}
+
+.auth > input {
+	width: 80px;
+}
+
+

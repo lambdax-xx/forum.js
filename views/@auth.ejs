@@ -1,0 +1,89 @@
+<div class="auth">
+	<% if (locals.session.user) { %>
+		<% if (locals.admin) { %>
+			<a href="/user.html" disabled><%= session.user.name %></a>
+			<button onclick="openPasswordDlg.call(this)">更改密码</button>
+			<script>
+				
+			</script>
+		<% } else { %>
+			<a href="/user.html"><%= session.user.name %></a>
+			<button onclick="logout.call(this)">退出</button>
+			<script>
+				function logout() {
+					this.disabled = true;
+					ajax.get('/user/logout', function (error, result) {
+						this.disabled = false;
+						if (error || result != 'ok')
+							return alert(error || result);
+						refreshAuth();
+					});
+				}
+			</script>
+		<% } %>
+	<% } else { %>
+		<input type="text" id="userName" placeHolder="用户名">
+		<input type="password" id="userPassword" placeHolder="密码">
+		<button onclick="login.call(this)">登录</button>
+		<button onclick="openRegDlg.call(this)">注册</button>
+		<div class="dialog-closed" id="regDlg">
+			<div class="dialog">
+				<span class="caption">用户注册 
+					<button type="button" class="btn-cancel" onclick="closeRegDlg(); "><i class="x"></i></button> 
+				</span>
+				<div class="main">
+					<p id="regInfo"></p>
+					<label>用户名：</label><input type="text" id="regName"><p>
+					<label>密码：<span class="nbsp1"/></label><input type="password" id="regPassword"><p>
+					<label><span class="nbsp4"></label><input type="password" id="regPassword2"><p>
+					<button onclick="register(this);">确认</button> 
+					<button onclick="closeRegDlg();">取消</button>
+				</div>
+			</div>
+		</div>
+		<script>
+			function login() {
+				this.disabled = true;
+				ajax.get('/user/login?name=' + userName.value + '&password=' + userPassword.value, function (error, result) {
+					this.disabled = false;
+					if (error || result != 'ok')
+						return alert(error || result);
+					refreshAuth();
+				});
+			}
+			function openRegDlg () {
+				regDlg.className = "dialog-opened";
+			}
+			function closeRegDlg () {
+				regDlg.className = "dialog-closed";
+
+				regName.value = '';
+				regPassword.value = '';
+				regPassword2.value = '';
+				regInfo.innerHTML = '';
+			}
+			function register(btn) {
+				btn.disabled = true;
+				ajax.get('/user/register?name=' + regName.value + '&password=' + regPassword.value + '&code=', function (error, result) {
+					btn.disabled = false;
+					if (error || result != 'ok')
+						return void(regInfo.innerHTML = '<span class="warning">' + (error || result) + '<span>');
+					alert('用户注册成功，请登录！');
+					closeRegDlg();
+				});
+			}
+		</script>
+	<% } %>
+	<script>
+		function refreshAuth() {
+			ajax.get('/user/auth.html', function (error, result) {
+				if (error)
+					return alert(error);
+
+				all('.auth').forEach(function (auth) {
+					auth.innerHTML = result;
+				});
+			});
+		}
+	</script>
+</div>
