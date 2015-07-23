@@ -1,6 +1,7 @@
 {
   "name": "forum.js",
   "version": "0.0.1",
+  "description": "A node.js forum framework.",
   "scripts": {
     "start": "node app"
   },
@@ -11,7 +12,7 @@
     "express-session": "~1.11.3",
     "mysql": "~2.7.0",
     "serve-favicon": "~2.3.0",
-    "nodemailer": "~1.4.0",
+    "nodemailer": "~1.4.0"
   },
   "author": "Huang YiXin",
   "license": "MIT-LICENSE"
