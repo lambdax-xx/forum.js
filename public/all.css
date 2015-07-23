@@ -1,3 +1,5 @@
+/* body */
+
 .toolbar {
 	position: fixed;
 	left: 0px;
@@ -10,10 +12,19 @@
 
 .main {
 	margin-top: 40px;
-	text-align: center;
+	width: 100%;
+}
+
+.client {
 	width: calc(100% - 10px);
 	padding: 5px;
 }
+
+.center {
+	text-align: center;
+}
+
+/* dialog */
 
 .dialog-opened, 
 .dialog-closed {
@@ -23,7 +34,7 @@
 	top: 0px;
 	bottom: 0px;
 	background: rgba(128, 128, 128, 0.5);
-	z-index: 99;
+	z-index: 49;
 }
 
 .dialog-opened {
@@ -44,7 +55,6 @@
 	border-color: gray;
 	background: white;
 	width: 320px;
-	-webkit-box-shadow:0 0 10px gray;  
 	box-shadow: 0 0 10px gray;
 
 	text-align: center;
@@ -83,6 +93,8 @@
 	padding: 3px;
 }
 
+/* text */
+
 .x::before {
 	font-style: normal;
 	font-family: sans-serif;
@@ -109,6 +121,8 @@
 	content: "空格空格"
 }
 
+/* auth */
+
 .auth {
 	float: right;
 }
@@ -121,3 +135,57 @@
 	width: 60px;
 }
 
+/* menu */
+
+.menu {
+	cursor: pointer;
+}
+
+.menu > li {
+	display: inline-block;
+	min-width: 32px;
+	text-align: center;
+	cursor: pointer;
+	border-style: solid;
+	margin: 0px;
+}
+
+.menu > li > .submenu {
+	position: absolute;
+	display: none;
+	background-color: white;
+	border-radius: 3px;
+	border-style: solid;
+	border-color: silver;
+	border-width: 1px;
+	box-shadow: 3px 3px 3px 0px silver;
+	z-index: 99;
+}
+
+.menu > li > .popup {
+	display: block;
+}
+
+.menu > li:hover {
+	background-color: rgb(128, 128, 128);
+}
+
+.menu > li > a {
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* special */
+
+.warning {
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 5px;
+	text-align: center;;
+	background-color: yellow;
+	color: black;
+	font-size: 10pt;
+	padding: 8px;
+	width: 90%;
+	display: inline-block;
+}

@@ -6,7 +6,7 @@ var db = mysql.createConnection({
 });
 
 db.query('create database if not exists ' + config.db + 
-	'default character set utf8 collate utf8_general_ci');
+	' default character set utf8 collate utf8_general_ci');
 
 db.query('use ' + config.db);
 

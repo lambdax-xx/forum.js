@@ -20,7 +20,7 @@ app.set('view engine', 'ejs');
 app.use(favicon(__dirname + "/favicon.png"));
 app.use(session({
 	secret: 'lambda x.xx',
-	name: 'FORMSID',
+	name: 'FORUMSID',
 	resave: false,
 	saveUninitialized: false,
 	cookie: { 

@@ -2,18 +2,20 @@
 	<% if (locals.session.user) { %>
 		<% if (locals.admin) { %>
 			<a href="/user.html" disabled><%= session.user.name %></a>
-			<button onclick="openPasswordDlg.call(this)">更改密码</button>
+			<button onclick="openPasswordDlg(this)">更改密码</button>
 			<script>
-				
+				function openPasswordDlg(btn) {
+					// ...
+				}
 			</script>
 		<% } else { %>
 			<a href="/user.html"><%= session.user.name %></a>
-			<button onclick="logout.call(this)">退出</button>
+			<button onclick="logout(this)">退出</button>
 			<script>
-				function logout() {
-					this.disabled = true;
-					ajax.get('/user/logout', function (error, result) {
-						this.disabled = false;
+				function logout(btn) {
+					btn.disabled = true;
+					ajax.get('/auth/logout', function (error, result) {
+						btn.disabled = false;
 						if (error || result != 'ok')
 							return alert(error || result);
 						refreshAuth();
@@ -22,69 +24,163 @@
 			</script>
 		<% } %>
 	<% } else { %>
-		<input type="text" id="loginNameOrEmail" placeHolder="用户名/邮箱">
+		<input type="text" id="loginKey" placeHolder="用户名/邮箱">
 		<input type="password" id="loginPassword" placeHolder="密码">
-		<button onclick="login.call(this)">登录</button>
-		<button onclick="openRegDlg.call(this)">注册</button>
-		<div class="dialog-closed" id="regDlg">
+		<button onclick="login(this, this.nextElementSibling)">登录</button>
+		<button onclick="openRegisterDialog()">注册</button>
+		<div class="dialog-closed" id="registerDialog">
 			<div class="dialog">
 				<span class="caption">用户注册 
-					<button type="button" class="btn-cancel" onclick="closeRegDlg(); "><i class="x"></i></button> 
+					<button type="button" class="btn-cancel" onclick="closeRegisterDialog(); "><i class="x"></i></button> 
 				</span>
 				<div class="main">
-					<p id="regInfo"></p>
-					<label>用户名：</label><input type="text" id="regName"><p>
-					<label>密码：<span class="nbsp1"/></label><input type="password" id="regPassword"><p>
-					<label><span class="nbsp4"></label><input type="password" id="regPassword2"><p>
-					<label>邮箱：<span class="nbsp1"/></label><input type="email" id="regEmail"><p>
-					<label>验证码：</label><input type="text" id="regCaptchaCode"><p>
-					<label><span class="nbsp4"></label><img id="regCaptchaImage" src="/captcha/image"><p>
+					<p id="registerInfo"></p><p>
+					<label>用户名：</label><input type="text" id="registerName"> <span>&nbsp;&nbsp;</span><p>
+					<label>密码：<span class="nbsp1"/></label><input type="password" id="registerPassword"> <span>&nbsp;&nbsp;</span><p>
+					<label><span class="nbsp4"></label><input type="password" id="registerPassword2"> <span>&nbsp;&nbsp;</span><p>
+					<label>邮箱：<span class="nbsp1"/></label><input type="email" id="registerEmail"> <span>&nbsp;&nbsp;</span><p>
+					<label>验证码：</label><input type="text" id="registerCaptchaCode"> <span>&nbsp;&nbsp;</span><br>
+					<label><span class="nbsp4"></label><img id="registerCaptchaImage" width=128 height=64>
+						<button onclick=changeCaptchaImage(this)>换一个</button><span>&nbsp;&nbsp;</span><p>
+					<hr>
 					<button onclick="register(this);">确认</button> 
-					<button onclick="closeRegDlg();">取消</button>
+					<button onclick="closeRegisterDialog();">取消</button>
 				</div>
 			</div>
 		</div>
 		<script>
-			function login() {
-				this.disabled = true;
-				ajax.get('/user/login?name=' + userName.value + '&password=' + userPassword.value, function (error, result) {
-					this.disabled = false;
-					if (error || result != 'ok')
-						return alert(error || result);
-					refreshAuth();
+			function login(btn1, btn2) {
+				btn1.disabled = true;
+				btn2.disabled = true;
+				ajax.get('/auth/login?key=' + encodeURIComponent(loginKey.value) + 
+					'&password=' + encodeURIComponent(loginPassword.value), 
+					function (error, result) {
+						btn1.disabled = false;
+						btn2.disabled = false;
+						if (error || result != 'ok')
+							return alert(error || result);
+						refreshAuth();
 				});
 			}
-			function openRegDlg () {
-				regDlg.className = "dialog-opened";
+			function changeCaptchaImage(btn) {
+				if (btn) btn.disabled = true;
+				registerCaptchaImage.alt = '';
+				registerCaptchaImage.src = '';
+				ajax.get('/auth/captcha.img?doChange=true', function (error, result) {
+					if (btn) btn.disabled = false;
+					if (error)
+						registerCaptchaImage.alt = error;
+					else
+						registerCaptchaImage.src = result;
+				});
 			}
-			function closeRegDlg () {
-				regDlg.className = "dialog-closed";
+			changeCaptchaImage();
+			function openRegisterDialog () {
+				registerDialog.className = "dialog-opened";
+			}
+			function closeRegisterDialog () {
+				registerDialog.className = "dialog-closed";
 
-				regName.value = '';
-				regPassword.value = '';
-				regPassword2.value = '';
-				regInfo.innerHTML = '';
+				registerName.value = '';
+				registerPassword.value = '';
+				registerPassword2.value = '';
+				registerInfo.innerHTML = '';
 			}
 			function register(btn) {
+				if (registerPassword.value !== registerPassword2.value)
+					return void(registerInfo.innerHTML = '<span class="warning">两次输入的密码不一样<span>');
+
+				registerInfo.innerHTML = '';
+
 				btn.disabled = true;
-				ajax.get('/user/register?name=' + regName.value + '&password=' + regPassword.value + '&code=', function (error, result) {
-					btn.disabled = false;
-					if (error || result != 'ok')
-						return void(regInfo.innerHTML = '<span class="warning">' + (error || result) + '<span>');
-					alert('用户注册成功，请登录！');
-					closeRegDlg();
+				ajax.get('/auth/register?name=' + encodeURIComponent(registerName.value) + 
+					'&password=' + encodeURIComponent(registerPassword.value) + 
+					'&email=' + encodeURIComponent(registerEmail.value) + 
+					'&captcha=' + encodeURIComponent(registerCaptchaCode.value), 
+					function (error, result) {
+						btn.disabled = false;
+						if (error || result != 'ok')
+							return void(registerInfo.innerHTML = '<span class="warning">' + (error || result) + '<span>');
+						alert('用户注册成功，请登录！');
+						closeRegisterDialog();
 				});
 			}
+			registerDialog.addEventListener('keypress', function(event) {
+				if (event.target === registerName || 
+					event.target === registerPassword ||
+					event.target === registerEmail || 
+					event.target === registerCaptchaCode) {
+
+					event.target.nextElementSibling.innerHTML = '&nbsp;&nbsp;';
+				}
+			}, true);
+			registerDialog.addEventListener('change', function(event) {
+				if (event.target === registerName) {
+					registerName.nextElementSibling.innerText = symbols.waiting;
+					ajax.get('/auth/registerCheck?variable=name&value=' +  encodeURIComponent(registerName.value), 
+						function (error, result) {
+							if (result == 'ok') {
+								registerName.nextElementSibling.innerText = symbols.ok;
+							} else {
+								registerName.nextElementSibling.innerText = symbols.wrong;
+							}
+					});
+				} else if (event.target === registerPassword) {
+					registerPassword.nextElementSibling.innerText = symbols.waiting;
+					ajax.get('/auth/registerCheck?variable=password&value=' +  encodeURIComponent(registerPassword.value), 
+						function (error, result) {
+							if (result == 'ok') {
+								registerPassword.nextElementSibling.innerText = symbols.ok;
+							} else {
+								registerPassword.nextElementSibling.innerText = symbols.wrong;
+							}
+					});
+				} else if (event.target === registerEmail) {
+					registerEmail.nextElementSibling.innerText = symbols.waiting;
+					ajax.get('/auth/registerCheck?variable=email&value=' +  encodeURIComponent(registerEmail.value), 
+						function (error, result) {
+							if (result == 'ok') {
+								registerEmail.nextElementSibling.innerText = symbols.ok;
+							} else {
+								registerEmail.nextElementSibling.innerText = symbols.wrong;
+							}
+					});
+				} else if (event.target === registerCaptchaCode) {
+					registerCaptchaCode.nextElementSibling.innerText = symbols.waiting;
+					ajax.get('/auth/registerCheck?variable=captcha&value=' +  encodeURIComponent(registerCaptchaCode.value), 
+						function (error, result) {
+							if (result == 'ok') {
+								registerCaptchaCode.nextElementSibling.innerText = symbols.ok;
+							} else {
+								registerCaptchaCode.nextElementSibling.innerText = symbols.wrong;
+							}
+					});
+				}
+			}, true);
 		</script>
 	<% } %>
 	<script>
 		function refreshAuth() {
-			ajax.get('/user/auth.html', function (error, result) {
+			ajax.get('/auth.htm', function (error, result) {
 				if (error)
 					return alert(error);
 
-				all('.auth').forEach(function (auth) {
-					auth.innerHTML = result;
+				one('.auth').handle(function (auth) {
+					auth.outerHTML = result;
+				});
+
+				one('.auth').handle(function (auth) {
+					var scripts = auth.getElementsByTagName('script');
+					var script = '';
+					for (var i = 0; i < scripts.length; i++) {
+						script += scripts[i].innerText;
+					}
+
+					var se = document.createElement('script');
+
+					se.innerText = script;
+
+					auth.appendChild(se);
 				});
 			});
 		}
