@@ -8,6 +8,7 @@
 	height: 32px;
 	padding: 3px;
 	border-bottom-style: solid;
+	background-color: white;
 }
 
 .main {
@@ -18,10 +19,37 @@
 .client {
 	width: calc(100% - 10px);
 	padding: 5px;
+	min-height: 300px;
 }
 
 .center {
 	text-align: center;
+}
+
+.header {
+	margin-left: -10px;
+	margin-right: -10px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.header .caption {
+	color: gray;
+	font-family: "Impact";
+}
+
+.header .description {
+	color: gray;
+	font-family: "Impact";
+
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.footer {
+	text-align: center;
+	font-size: 10px;
+	font-family: "Impact"
 }
 
 /* dialog */

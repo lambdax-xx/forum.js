@@ -5,8 +5,8 @@ global.ejs = {
 		return helpers.assign({
 			session: req.session,
 
-			htmlTitle: config.htmlTitle || config.appName, 
-			logoCaption: config.logoCaption || config.htmlTitle || config.appName, 
+			title: config.title || config.appName, 
+			caption: config.caption || config.title || config.appName, 
 
 		}, others);
 	}

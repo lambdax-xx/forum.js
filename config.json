@@ -9,6 +9,6 @@
 	"articlesPrePage": "16", 
 
 	"appName": "forum.js",
-	"htmlTitle": null,
-	"logoCaption": null
+	"title": null,
+	"caption": null
 }

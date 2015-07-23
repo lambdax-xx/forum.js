@@ -1,11 +1,50 @@
 <div class="auth">
 	<% if (locals.session.user) { %>
 		<% if (locals.admin) { %>
-			<a href="/user.html" disabled><%= session.user.name %></a>
-			<button onclick="openPasswordDlg(this)">更改密码</button>
+			<span><%= session.user.name %></span>
+			<button onclick="openModifyPasswordDialog()">更改密码</button>
+			<div class="dialog-closed" id="modifyPasswordDialog">
+				<div class="dialog">
+					<span class="caption">修改密码
+						<button type="button" class="btn-cancel" onclick="closeModifyPasswordDialog(); "><i class="x"></i></button> 
+					</span>
+					<div class="main">
+						<p id="modifyPasswordInfo"></p><p>
+						<label>原密码：</label><input type="password" id="modifyOldPassword"> <span>&nbsp;&nbsp;</span><p>
+						<label>新密码：</label><input type="password" id="modifyNewPassword"> <span>&nbsp;&nbsp;</span><p>
+						<label><span class="nbsp4"></label><input type="password" id="modifyNewPassword2"> <span>&nbsp;&nbsp;</span><p>
+						<hr>
+						<button onclick="modifyPassword(this);">确认</button> 
+						<button onclick="closeModifyPasswordDialog();">取消</button>
+					</div>
+				</div>
+			</div>
 			<script>
-				function openPasswordDlg(btn) {
-					// ...
+				function openModifyPasswordDialog() {
+					modifyPasswordDialog.className = 'dialog-opened';
+				}
+				function closeModifyPasswordDialog() {
+					modifyPasswordDialog.className = 'dialog-closed';
+
+					modifyOldPassword.value = '';
+					modifyNewPassword.value = '';
+					modifyNewPassword2.value = '';
+					modifyPasswordInfo.innerText = '';
+				}
+				function modifyPassword(btn) {
+					if (modifyNewPassword.value !== modifyNewPassword2.value)
+						return void(modifyPasswordInfo.innerHTML = '<span class="warning">两次输入的新密码不一样<span>');
+
+					btn.disabled = true;
+					modifyPasswordInfo.innerText = '';
+					ajax.get('/auth/modifyPassword?oldPassword=' + encodeURIComponent(modifyOldPassword.value) +
+						'&newPassword=' + encodeURIComponent(modifyNewPassword.value), 
+						function(error, result) {
+							btn.disabled = false;
+							if (result != 'ok')
+								return void(modifyPasswordInfo.innerHTML = '<span class="warning">' + (error || result) + '<span>');
+							closeModifyPasswordDialog();
+					});
 				}
 			</script>
 		<% } else { %>

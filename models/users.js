@@ -9,7 +9,7 @@ db.query(db.sql(function () { /*
 		password varchar(16) not null,
 		email varchar(255) not null,
 		valid boolean default false,
-		cts timestamp not null,
+		cts datetime not null,
 		uts timestamp default current_timestamp on update current_timestamp,
 		primary key (id),
 		key (name),
