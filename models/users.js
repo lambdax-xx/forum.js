@@ -1,6 +1,6 @@
 var db = require('./db');
 
-exports.valid = false;
+exports.invalid = -1;
 
 db.query(db.sql(function () { /* 
 	create table if not exists users (
@@ -19,13 +19,13 @@ db.query(db.sql(function () { /*
 	if (error)
 		throw new Error(error);
 
-	exports.valid = true;
+	exports.invalid++;
 
 	selectUserById(1, function (user) {
 		if (!user)
 			insertUser('root', '123456', 'lambdax_xx@126.com', function () {
 				updateUserValid(1, true, function () { })
-			})
+			});
 	});
 });
 
@@ -106,6 +106,10 @@ function validate(field, value) {
 			return 'error';
 	}
 }
+
+exports.internals = {
+	selectUserById: selectUserById,
+};
 
 /* operation */
 
@@ -189,4 +193,3 @@ exports.modifyPassword = function (id, oldPassword, newPassword, callback) {
 		updateUserPassowrd(id, newPassword, callback);
 	});
 }
-

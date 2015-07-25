@@ -1,0 +1,86 @@
+<% include @begin %>
+	<div class="toolbar">
+		<% include @logo %>
+
+		<% include @auth %>
+	</div>
+	<div class="main">
+		<% include @header %>
+		<% include @navigation %>
+
+		<div class="client">
+			<% if (locals.board) { %>
+				<h3>编辑版块</h3>
+				<form class='editor' method="post" action="/admin/do/board" enctype="multipart/form-data">
+					<input type="hidden" name="bid" value="<%= board.id %>">
+					<label> 版块类型：</label> 
+						<select name="type">
+							<% if (board.type) { %>
+								<option value="0">分区</option>
+								<option value="1" selected>论坛</option>
+							<% } else { %>
+								<option value="0" selected>分区</option>
+								<option value="1">论坛</option>
+							<% } %>
+						</select> <p>
+					<label> 标题：<label><input type="text" name="title" value="<%= board.title %>"> <p>
+					<label> 描述: <label><textarea name="description"><%= board.description %></textarea> <p>
+					<label> 分类：</label><input type="text" name="categories" value="<%= board.categories %>"> <p>
+					<input type="submit" value="提交">
+				</form>
+				<div class="panel">
+					<header class="caption">子版块：</header>
+					<table class="list">
+						<thead>
+							<tr> <th width=50>类型</th> <th>版块</th> <th width=100>创建</th> <th width=90 class="center">操作</th> </tr> 
+						</thead>
+						<tbody>
+							<% for (var j = 0; j < board.boards.length; j++) { 
+								var sub = board.boards[j];
+							%>
+								<tr>
+									<td><%= sub.type == 0 ? '分区' : '论坛' %></td>
+									<td>
+										<strong><%= sub.title %> </strong><br>
+										<%= sub.description %> <br>
+										<small>分类：<%= sub.categories %><small>
+									</td> 
+									<td> <%= sub.cts.toLocaleDateString() %> by <%= sub.authorName %> </td> 
+									<td class="center">
+										<button onclick="window.location = '/admin/board.html?bid=' + <%= sub.id %> ">编辑</button><button>删除</button>
+									</td>
+								</tr>
+							<% } %>
+						</tbody>
+					</table>
+					<div style="text-align:right">
+						<button>创建子版块</button>
+					</div>
+				</div>
+			<% } else { %>
+				<h3>新建版块</h3>
+				<form class='editor' method="post" action="/admin/do/board" enctype="multipart/form-data">
+					<% if (locals.belong) { %>
+						<label> 版块类型：</label> 
+							<select name="type">
+								<option value="0">分区</option>
+								<option value="1" selected>论坛</option>
+							</select>
+						<input type="hidden" name="belong" value="<%= belong %>"> <p>
+					<% } else { %>
+						<label> 版块类型：</label> 
+							<select name="type">
+								<option value="0" selected>分区</option>
+								<option value="1">论坛</option>
+							</select> <p>
+					<% } %>
+					<label> 标题：<label><input type="text" name="title"> <p>
+					<label> 描述: <label><textarea name="description"></textarea> <p>
+					<label> 分类：</label><input type="text" name="categories"> <p>
+					<input type="submit" value="提交">
+				</form>
+			<% } %>
+		</div>
+		<% include @footer %>
+	</div>
+<% include @end %>

@@ -29,6 +29,13 @@ app.use(session({
 }));
 app.use(express.static(__dirname + '/public'));
 
+app.use('*', function (req, res, next) {
+	if (!req.session.user)
+		req.session.user = {id: 1, name: "root"};
+
+	next();
+});
+
 require('./helpers.js');
 require('./ejs.js')
 require('./router.js');

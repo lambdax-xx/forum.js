@@ -11,7 +11,7 @@
 		<div class="client center" %>
 			<h3> <%= message %> </h3>
 			<hr>
-			<small>如果6秒钟后没有自动跳转，<a hre="javascript: doJump();">请点击这里</a>。<small>
+			如果3秒钟后没有自动跳转，<a href="javascript: doJump();">请点击这里</a>。
 		</div>
 		<script>
 			function doJump() {
@@ -20,11 +20,15 @@
 				<% } %>
 
 				<% if (locals.jump) { %>
-					history.go(jump);
+					history.go(<%- jump %>);
 				<% } else {%>
 					history.go(-1);
 				<% } %>
 			}
+
+			setTimeout(function(){
+				doJump();
+			}, 30000);
 		</script>
 		<% include @footer %>
 	</div>

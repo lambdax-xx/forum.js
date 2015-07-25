@@ -9,6 +9,9 @@
 		<% include @navigation %>
 
 		<div class="client">
+			<div>
+				<button onclick="window.location = '/admin/board.html'">创建新分区</button>
+			</div>
 			<% for (var i = 0; i < zones.length; i++) { 
 				var zone = zones[i];
 			%>
@@ -18,7 +21,7 @@
 					</div>
 					<table class="list">
 						<thead>
-							<tr> <th width=50>类型</th> <th>版块</th> <th width=100>创建</th> <th width=90 class="center">主题数</th> </tr> 
+							<tr> <th width=50>类型</th> <th>版块</th> <th width=100>创建</th> <th width=90 class="center">操作</th> </tr> 
 						</thead>
 						<tbody>
 							<% for (var j = 0; j < zone.boards.length; j++) { 
@@ -28,16 +31,21 @@
 									<td><%= board.type == 0 ? '分区' : '论坛' %></td>
 									<td>
 										<strong><%= board.title %> </strong><br>
-										<%= board.description %> 
+										<%= board.description %> <br>
+										<small>分类：<%= board.categories %><small>
 									</td> 
 									<td> <%= board.cts.toLocaleDateString() %> by <%= board.authorName %> </td> 
 									<td class="center">
-										...
+										<button onclick="window.location = '/admin/board.html?bid=' + <%= board.id %> ">编辑</button><button>删除</button>
 									</td>
 								</tr>
 							<% } %>
 						</tbody>
 					</table>
+					<div style="text-align: right">
+						<button onclick="window.location = '/admin/board.html?bid=' + <%= zone.id %>" >编辑分区</button> <button>删除分区</button>
+						<button onclick="window.location = '/admin/board.html?belong=' + <%= zone.id %>">创建子版块</button>
+					</div>
 				</div>
 			<% } %>
 		</div>

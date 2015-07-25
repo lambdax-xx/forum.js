@@ -1,5 +1,4 @@
 /* body */
-
 .toolbar {
 	position: fixed;
 	left: 0px;
@@ -20,6 +19,7 @@
 	width: calc(100% - 10px);
 	padding: 5px;
 	min-height: 300px;
+	font-size: 11pt;
 }
 
 .center {
@@ -217,3 +217,53 @@
 	width: 90%;
 	display: inline-block;
 }
+
+/* edtor */
+
+.editor input[type="text"] {
+	width: 100%;
+}
+
+.editor textarea {
+	width: 100%;
+}
+
+.list {
+	width: 100%;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.list th {
+	text-align: left;
+	background-color: silver;
+}
+
+.list td {
+	border-top-style: dotted;
+	border-top-width: 1px;
+}
+
+.list td:first {
+	border-top-style: solid;
+}
+
+.list .center {
+	text-align: center;
+}
+
+.panel {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.panel .caption {
+	background-color: silver;
+	border-style: solid;
+	border-color: gray;
+	border-width: 1px;
+
+	border-bottom-style: none;
+}
+
+
