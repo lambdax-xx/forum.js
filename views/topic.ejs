@@ -1,0 +1,49 @@
+<% include @begin %>
+	<div class="toolbar">
+		<% include @logo %>
+
+		<% include @auth %>
+	</div>
+	<div class="main">
+		<% include @header %>
+		<% include @navigation %>
+
+		<div class="client">
+			<% if (locals.topic) { %>
+				<form class="editor" method="post" action="/do/topic" enctype="multipart/form-data">
+					<input type="hidden" name="tid" value="<%= topic.id %>">
+					<h3>编辑主题</h3>
+					<label>主题标题：</label><input type="text" name="headline" value="<%- topic.headline %>"><p>
+					<label>分类：</label><select name="category">
+							<option>xxx</option> 
+						</select><p>
+					<h4>主贴</h4>
+					<label>类型：</label><select name="type">
+							<option value=0>帖子</option>
+							<option value=1>其他</option>
+						</select><p>
+					<label>标题：</label><input type="text" name="caption" value="<%- topic.caption %>"><p>
+					<label>内容：</label><textarea name="content"><%= topic.content %></textarea><p>
+					<input type="submit" vlaue="提交">				
+				</form>
+			<% } else { %>
+				<form class="editor" method="post" action="/do/topic" enctype="multipart/form-data">
+					<input type="hidden" name="bid" value="<%= bid %>">
+					<h3>新主题</h3>
+					<label>主题标题：</label><input type="text" name="headline"><p>
+					<label>分类：</label><select name="category">
+							<option>xxx</option> 
+						</select><p>
+					<h4>主贴</h4>
+					<label>类型：</label><select name="type">
+							<option value=0>帖子</option>
+							<option value=1>其他</option>
+						</select><p>
+					<label>标题：</label><input type="text" name="caption" %>"><p>
+					<label>内容：</label><textarea name="content"></textarea><p>
+					<input type="submit" vlaue="提交">			
+				</form>
+			<% } %>
+		<% include @footer %>
+	</div>
+<% include @end %>

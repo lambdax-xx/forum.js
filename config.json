@@ -1,6 +1,11 @@
 {
-	"db_user": "root",
-	"db_password": "123456",
+	
+	"db_host": "55b3adb5c6d07.sh.cdb.myqcloud.com", 
+	"db_port": 4951,
+	"db_user": "cdb_outerroot",
+	"db_password": "1234abcd",
+	"_db_user": "root",
+	"_db_password": "123456",
 	"db": "forum_db",
 
 	"port": "3001",

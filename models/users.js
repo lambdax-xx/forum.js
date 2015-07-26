@@ -109,6 +109,7 @@ function validate(field, value) {
 
 exports.internals = {
 	selectUserById: selectUserById,
+	selectUserByName: selectUserByName,
 };
 
 /* operation */
@@ -193,3 +194,4 @@ exports.modifyPassword = function (id, oldPassword, newPassword, callback) {
 		updateUserPassowrd(id, newPassword, callback);
 	});
 }
+

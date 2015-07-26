@@ -1,0 +1,75 @@
+<% include @begin %>
+	<div class="toolbar">
+		<% include @logo %>
+
+		<% include @auth %>
+	</div>
+	<div class="main">
+		<% include @header %>
+		<% include @navigation %>
+
+		<div class="client">
+			<h4><%= board.type == 0 ? '分区' : '版块'%>：<%= board.title %></h4>
+			<small>版主：<%= board.authorName %> <small>
+			<p><%= board.description %>
+
+			<% if (board.boards && board.boards.length) { %>
+				<div class="panel">
+					<header class="caption">子版块：</header>
+					<table class="list">
+						<thead>
+							<tr> <th width=50>类型</th> <th>版块</th> <th width=100>创建</th> <th width=90 class="center">主题数</th> </tr> 
+						</thead>
+						<tbody>
+							<% for (var j = 0; j < board.boards.length; j++) { 
+								var sub = board.boards[j];
+							%>
+								<tr>
+									<td><%= sub.type == 0 ? '分区' : '论坛' %></td>
+									<td>
+										<strong><a href="/forum.html?bid=<%- sub.id %>"><%= sub.title %></a></strong><br>
+										<%= sub.description %> 
+									</td> 
+									<td> <%= sub.cts.toLocaleDateString() %> by <%= sub.authorName %> </td> 
+									<td class="center">
+										...
+									</td>
+								</tr>
+							<% } %>
+						</tbody>
+					</table>
+				</div>
+			<% } %>
+			
+			<div class="panel">
+				<header class="caption">主题</header>
+				<table class="list">
+					<thead>
+						<tr> <th width=50>类型</th> <th>主题</th> <th width=100>帖子/访问</th> <th width=100>创建</th> <th width=90 class="center">最后回复</th> </tr> 
+					</thead>
+					<tbody>
+						<% for (var j = 0; j < board.topics.length; j++) { 
+							var  topic = board.topics[j];
+						%>
+							<tr>
+								<td><%= topic.type == 0 ? '帖子' : '其他' %></td>
+								<td>
+									<strong><a href="/thread.html?tid=<%- topic.id %>"><%= topic.headline %></a></strong>
+								</td>
+								<td> <%= topic.threads %> / <%= topic.visits %> </td> 
+								<td> <%= topic.cts.toLocaleDateString() %> by <%= topic.authorName %> </td> 
+								<td>
+									<%= topic.lastReply.cts.toLocaleDateString() %> by <%= topic.lastReply.authorName %>
+								</td>
+							</tr>
+						<% } %>
+					</tbody>
+				</table>
+				<p style="text-align:right">
+					<button onclick="window.location='/topic.html?bid=<%- board.id %>'">发表新主题</button>
+				</P>
+			</div>
+		</div>
+		<% include @footer %>
+	</div>
+<% include @end %>

@@ -27,7 +27,7 @@
 								<tr>
 									<td><%= board.type == 0 ? '分区' : '论坛' %></td>
 									<td>
-										<strong><%= board.title %> </strong><br>
+										<strong><a href="/forum.html?bid=<%= board.id %>"><%= board.title %></a></strong><br>
 										<%= board.description %> 
 									</td> 
 									<td> <%= board.cts.toLocaleDateString() %> by <%= board.authorName %> </td> 

@@ -88,6 +88,10 @@ function updateBoard (bid, title, description, type, categories, callback) {
 		});	
 }
 
+exports.internals = {
+	selectBoardById: selectBoardById,
+};
+
 
 /* operation */
 
