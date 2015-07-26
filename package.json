@@ -13,7 +13,7 @@
     "mysql": "~2.7.0",
     "serve-favicon": "~2.3.0",
     "nodemailer": "~1.4.0",
-    "canvas": "~1.2.3",
+    "canvas": "~1.2.3"
   },
   "author": "Huang Yixin",
   "license": "MIT"
