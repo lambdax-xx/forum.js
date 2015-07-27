@@ -22,8 +22,8 @@
 							<option value=0>帖子</option>
 							<option value=1>其他</option>
 						</select><p>
-					<label>标题：</label><input type="text" name="caption" value="<%- topic.caption %>"><p>
-					<label>内容：</label><textarea name="content"><%= topic.content %></textarea><p>
+					<label>标题：</label><input type="text" name="caption" value="<%- topic.mainThread.caption %>"><p>
+					<label>内容：</label><textarea name="content"><%= topic.mainThread.content %></textarea><p>
 					<input type="submit" vlaue="提交">				
 				</form>
 			<% } else { %>

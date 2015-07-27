@@ -1,0 +1,48 @@
+<% include @begin %>
+	<div class="toolbar">
+		<% include @logo %>
+
+		<% include @auth %>
+	</div>
+	<div class="main">
+		<% include @header %>
+		<% include @navigation %>
+		<div class="client">
+			<div class="panel">
+				<div class="caption">
+					<%= topic.headline %> 楼主: <%= topic.authorName %>
+				</div>
+				<table class="list">
+					<thead>
+						<tr><th width=120>作者</th><th>帖子</th><th width=60>操作</th></tr>
+					</thead>
+					<tbody>
+						<% if (topic.threads) { 
+							for (var n = 0; n < topic.threads.length; n++) {
+								var thread = topic.threads[n];
+						%>
+							<tr><td><%= thread.authorName %></td>
+								<td>
+									发表于：<%= thread.cts.toLocaleDateString() %>  | <%= thread.serial + 1 %> 楼 
+								</td>
+								<td>
+									<button onclick="window.location='/reply.html?thid=<%- thread.id %>'">编辑</button>
+								</td>
+							<tr>
+								<td> </td>
+								<td colspan=2>
+									<strong><%= thread.caption %></strong> <br>
+									<span><%= thread.content %></span>
+								</td>
+							</tr>
+						<% }} %>
+					</tbody>
+				</table>
+				<div style="text-align:right">
+					<button onclick="window.location='/reply.html?tid=<%- topic.id %>'">回复</button>
+				</div>
+			</div>
+		</div>
+		<% include @footer %>
+	</div>
+<% include @end %>

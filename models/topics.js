@@ -100,7 +100,7 @@ function selectThreadsOfTopic(tid, start, length, author, callback) {
 	db.query(db.format(db.sql(function () { /* 
 		select threads.*, users.name as authorName from threads, users 
 			where threads.topic = {1} {2} and
-				  topics.author = users.id
+				  threads.author = users.id
 			order by serial 
 			limit {3}, {4}
 	*/}), tid, sqlfilter, start, length),
@@ -167,7 +167,7 @@ function insertIntoThread(tid, serial, author, caption, content, type, callback)
 }
 
 function updateThread(thid, caption, content, type, callback) {
-	db.query(db.format("update threads set caption = '{1}', content = '{2}', type = {3} where thread.id = {4}",
+	db.query(db.format("update threads set caption = '{1}', content = '{2}', type = {3} where threads.id = {4}",
 		db.dq(caption), db.dq(content), type, thid), function (error, result, fields) {
 			if (error)
 				throw new Error(error);
@@ -205,6 +205,21 @@ function selectTopicById(tid, callback) {
 		});
 }
 
+function selectThreadById(ttid, callback) {
+	db.query("select threads.*, users.name as authorName from threads, users where threads.id = " + ttid + 
+		" and threads.author = users.id", function (error, result, fields) {
+			if (error)
+				throw new Error(error);
+
+			callback(result[0]);
+		});
+}
+
+exports.internals = {
+	selectTopicById: selectTopicById,
+	selectThreadById: selectThreadById,
+}
+
 /* operation */
 
 exports.ThreadTypes = {
@@ -214,7 +229,7 @@ exports.ThreadTypes = {
 
 exports.settings = {
 	topicsPerPage: 32,
-	threadsPerPage: 32,
+	threadsPerPage: 16,
 }
 
 exports.pageTopics = function (bid, page, options, callback) {
@@ -228,8 +243,10 @@ exports.pageTopics = function (bid, page, options, callback) {
 		if (page < 0)
 			page = 0;
 
-		if (!pages)
-			return callback(undefined, {board: bid, page: page, pages: pages, total: total, options: options, topics: []});
+		if (!pages) {
+			return callback(undefined, undefined);
+		}
+			
 
 		var order = undefined;
 
@@ -266,8 +283,8 @@ exports.pageTopics = function (bid, page, options, callback) {
 
 exports.pageThreads = function (tid, page, options, callback) {
 	countThreadsOfTopic(tid, function (total) {
-		var pages = Math.trunc(total / exports.settings.threadsPrePage) + 
-				((total % exports.settings.threadsPrePage) ? 1 : 0);
+		var pages = Math.trunc(total / exports.settings.threadsPerPage) + 
+				((total % exports.settings.threadsPerPage) ? 1 : 0);
 
 		if (page >= pages)
 			page = pages - 1;
@@ -276,17 +293,30 @@ exports.pageThreads = function (tid, page, options, callback) {
 			page = 0;
 
 		if (!pages)
-			return callback(undefined, {board: bid, page: page, pages: pages, total: total,  options: options, threads: []});
+			return callback(undefined, undefined);
 
-		selectThreadsOfTopic(tid, page * exports.settings.threadsPrePage, exports.settings.threadsPrePage, 
+		selectThreadsOfTopic(tid, page * exports.settings.threadsPerPage, exports.settings.threadsPerPage, 
 			options.author,  function (threads) {
-				callback(undefined, {topic: tid, page: page, pages: pages, options: options, total: total, threads: threads});
+				helpers.assign(threads, {topic: tid, page: page, pages: pages, total: total, options: options});
+				callback(undefined, threads);
 			});
 	});
 }
 
 exports.topic = function (tid, callback) {
-	selectTopicById(tid, function (topic) { callback(undefined, topics);});
+	selectTopicById(tid, function (topic) {
+		if (!topic)
+			callback('没有找到主题');
+
+			findMainThreadOfTopic(tid, function (thread) {
+				if (!thread)
+					return callback('没有主贴');
+
+				topic.mainThread = thread;
+
+				callback(undefined, topic);
+			}) 
+	});
 }
 
 exports.addTopic = function (bid, headline, author, category, caption, content, type, callback) {
@@ -301,4 +331,16 @@ exports.editTopic = function (tid, headline, category, caption, content, type, c
 			updateThread(mainThread.id, caption , content, type, callback);
 		});
 	});
+}
+
+exports.addThread = function (topic, author, type, caption, content, callback) {
+	topic.threads ++;
+
+	updateTopicThreads(topic.id, topic.threads, function () {
+		insertIntoThread(topic.id, topic.threads, author, caption, content, type, callback);
+	});
+}
+
+exports.editThread = function (thid, type, caption, content, callback) {
+	updateThread(thid, caption, content, type, callback);
 }

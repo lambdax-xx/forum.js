@@ -1,0 +1,41 @@
+<% include @begin %>
+	<div class="toolbar">
+		<% include @logo %>
+
+		<% include @auth %>
+	</div>
+	<div class="main">
+		<% include @header %>
+		<% include @navigation %>
+
+		<div class="client">
+			<h3>主题：<%= topic.headline %></h3>
+			<span>楼主：<%= topic.authorName %> 分类：<%= topic.category %></span>
+			<% if (locals.thread) { %>
+				<h4><%= thread.serial ? '回复' : '主贴' %></h4>
+				<form class="editor" method="post" action="/do/reply" enctype="multipart/form-data">
+					<input type="hidden" name="thid" value="<%= thread.id %>">
+					<label>类型：</label><select name="type">
+							<option value=0>帖子</option>
+							<option value=1>其他</option>
+						</select><p>
+					<label>标题：</label><input type="text" name="caption" value="<%- thread.caption %>"><p>
+					<label>内容：</label><textarea name="content"><%= thread.content %></textarea><p>
+					<input type="submit" vlaue="提交">				
+				</form>
+			<% } else { %>
+				<h4>回复</h4>
+				<form class="editor" method="post" action="/do/reply" enctype="multipart/form-data">
+					<input type="hidden" name="tid" value="<%= topic.id %>">
+					<label>类型：</label><select name="type">
+							<option value=0>帖子</option>
+							<option value=1>其他</option>
+						</select><p>
+					<label>标题：</label><input type="text" name="caption" %>"><p>
+					<label>内容：</label><textarea name="content"></textarea><p>
+					<input type="submit" vlaue="提交">			
+				</form>
+			<% } %>
+		<% include @footer %>
+	</div>
+<% include @end %>
