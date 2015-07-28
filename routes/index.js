@@ -8,9 +8,9 @@ router.get(['/', '/index.html'], function (req, res, next) {
 
 	boards.zones(function (error, zones) {
 		if (error) 
-			return res.render('notify', ejs.options(req, {message: error}));
+			return res.ejs.render('notify', {message: error});
 
-		res.render('index', ejs.options(req, { zones: zones } ));
+		res.ejs.render('index', { zones: zones });
 	});
 });
 

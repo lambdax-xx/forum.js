@@ -166,19 +166,28 @@
 /* menu */
 
 .menu {
+	margin: 3px;
+}
+
+.menu button,
+.menu a,
+.menu input[type="button"] {
 	cursor: pointer;
+}
+
+ul.menu {
+	-webkit-padding-start: 0px;
 }
 
 .menu > li {
 	display: inline-block;
 	min-width: 32px;
 	text-align: center;
-	cursor: pointer;
-	border-style: solid;
 	margin: 0px;
 }
 
 .menu > li > .submenu {
+	text-align: left;
 	position: absolute;
 	display: none;
 	background-color: white;
@@ -198,9 +207,12 @@
 	background-color: rgb(128, 128, 128);
 }
 
+.menu > li.spliter:hover {
+	background-color: transparent;
+}
+
 .menu > li > a {
 	text-decoration: none;
-	cursor: pointer;
 }
 
 /* special */
@@ -266,4 +278,28 @@
 	border-bottom-style: none;
 }
 
+/* tree */
 
+.tree {
+	padding: 5px;
+	list-style: none;
+	text-align: left;
+	font-size: 10pt;
+}
+
+.tree ul {
+	-webkit-padding-start: 16px;
+	list-style: none;
+	text-align: left;
+}
+
+.tree li {
+	margin: 3px;
+}
+
+.navigation {
+	font-size: 10pt;
+	padding: 1px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}

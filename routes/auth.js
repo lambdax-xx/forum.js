@@ -4,7 +4,7 @@ var router = new express.Router();
 var users = require('../models/users');
 
 router.get('/auth.htm', function (req, res, next) {
-	res.render('@auth', ejs.options(req));
+	res.ejs.render('@auth');
 })
 
 router.get('/auth/login', function (req, res, next) {

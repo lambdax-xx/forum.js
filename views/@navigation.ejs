@@ -1,9 +1,18 @@
 <nav class="navigation">
 	<ul class="menu">
-		<li><button onclick="this.parentNode.openSubmenu();">版面导航</button>
+		<li><button onclick="this.parentNode.openSubmenu();">论坛导航</button>
 			<div class="submenu">
-				<a href="/index.html">首页</a>
+				<% include @website-map %>
 			</div>
 		</li>
+		<li><a href="/index.html">首页</a>
+		<% if (locals.websitePath) {
+			var i, path;
+			for (i = 0; i < websitePath.length; i++) {
+				path = websitePath[i];
+		%>
+			<li class="spliter">&gt;
+			<li><a href="<%- path.url %>"><%= path.name %></a>
+		<% } }%>
 	</ul>
 </nav>

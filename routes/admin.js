@@ -5,35 +5,35 @@ var boards = require('../models/boards');
 
 router.get('/admin.html', function (req, res, next) {
 	if (!req.session.user)
-		return res.render('notify', ejs.options(req, {message: '没有登录'}));
+		return res.ejs.render('notify', {message: '没有登录'});
 
 	boards.zones(function (error, zones) {
 		if (error) 
-			return res.render('notify', ejs.options(req, {message: error}));
+			return res.ejs.render('notify', {message: error});
 
-		res.render('admin', ejs.options(req, { zones: zones }));
+		res.ejs.render('admin', { zones: zones });
 	});
 });
 
 router.get('/admin/board.html', function (req, res, next) {
 	if (!req.session.user)
-		return res.render('notify', ejs.options(req, {message: '没有登录'}));
+		return res.ejs.render('notify', {message: '没有登录'});
 
 	if (req.query.bid) {
 		boards.board(req.query.bid, function (error, board) {
 			if (error) 
-				return res.render('notify', ejs.options(req, {message: error}));
+				return res.ejs.render('notify', {message: error});
 
-			res.render('board', ejs.options(req, { board: board }));
+			res.ejs.render('board', { board: board });
 		});
 	} else {
-		res.render('board', ejs.options(req, { belong: req.query.belong }));
+		res.ejs.render('board', { belong: req.query.belong });
 	}
 });
 
 router.post('/admin/do/board', function (req, res, next) {
 	if (!req.session.user)
-		return res.render('notify', ejs.options(req, {message: '没有登录'}));
+		return res.ejs.render('notify', {message: '没有登录'});
 
 	var buffer = '';
 
@@ -47,22 +47,25 @@ router.post('/admin/do/board', function (req, res, next) {
 		if (data.bid) {
 			boards.editBoard(req.session.user, data, function(error) {
 				if (error)
-					return res.render('notify', ejs.options(req, {message: error}));
-				else
-					return res.render('notify', ejs.options(req, {message: '新板块已经被添加', jump: -2, refresh: true}));
-
-			})
+					return res.ejs.render('notify', {message: error});
+				else {
+					ejs.dirtyPrefab('boardsTree');
+					return res.ejs.render('notify', {message: '新板块已经被添加', jump: -2, refresh: true});
+				}
+			});
 		} else {
 			boards.addBoard(req.session.user, data, function(error) {
 				if (error)
-					return res.render('notify', ejs.options(req, {message: error}));
-				else
-					return res.render('notify', ejs.options(req, {message: '新板块已经被添加', jump: -2, refresh: true}));
-
-			})
+					return res.ejs.render('notify', {message: error});
+				else {
+					ejs.dirtyPrefab('boardsTree');
+					return res.ejs.render('notify', {message: '新板块已经被添加', jump: -2, refresh: true});
+				}
+			});
 		}
 	})
 });
 
-
 module.exports = router;
+
+ejs.websitePath(['/admin.html', '/admin/do/board', '/admin/board.html'], [{ name: "管理", url: '/admin.html' }]);

@@ -40,35 +40,36 @@
 					</table>
 				</div>
 			<% } %>
-			
-			<div class="panel">
-				<header class="caption">主题</header>
-				<table class="list">
-					<thead>
-						<tr> <th width=50>类型</th> <th>主题</th> <th width=100>帖子/访问</th> <th width=100>创建</th> <th width=90 class="center">最后回复</th> </tr> 
-					</thead>
-					<tbody>
-						<% for (var j = 0; j < board.topics.length; j++) { 
-							var  topic = board.topics[j];
-						%>
-							<tr>
-								<td><%= topic.type == 0 ? '帖子' : '其他' %></td>
-								<td>
-									<strong><a href="/thread.html?tid=<%- topic.id %>"><%= topic.headline %></a></strong>
-								</td>
-								<td> <%= topic.threads %> / <%= topic.visits %> </td> 
-								<td> <%= topic.cts.toLocaleDateString() %> by <%= topic.authorName %> </td> 
-								<td>
-									<%= topic.lastReply.cts.toLocaleDateString() %> by <%= topic.lastReply.authorName %>
-								</td>
-							</tr>
-						<% } %>
-					</tbody>
-				</table>
-				<p style="text-align:right">
-					<button onclick="window.location='/topic.html?bid=<%- board.id %>'">发表新主题</button>
-				</P>
-			</div>
+			<% if (board.type != 0) { %>
+				<div class="panel">
+					<header class="caption">主题</header>
+					<table class="list">
+						<thead>
+							<tr> <th width=50>类型</th> <th>主题</th> <th width=100>帖子/访问</th> <th width=100>创建</th> <th width=90 class="center">最后回复</th> </tr> 
+						</thead>
+						<tbody>
+							<% for (var j = 0; j < board.topics.length; j++) { 
+								var  topic = board.topics[j];
+							%>
+								<tr>
+									<td><%= topic.type == 0 ? '帖子' : '其他' %></td>
+									<td>
+										<strong><a href="/thread.html?tid=<%- topic.id %>"><%= topic.headline %></a></strong>
+									</td>
+									<td> <%= topic.threads %> / <%= topic.visits %> </td> 
+									<td> <%= topic.cts.toLocaleDateString() %> by <%= topic.authorName %> </td> 
+									<td>
+										<%= topic.lastReply.cts.toLocaleDateString() %> by <%= topic.lastReply.authorName %>
+									</td>
+								</tr>
+							<% } %>
+						</tbody>
+					</table>
+					<p style="text-align:right">
+						<button onclick="window.location='/topic.html?bid=<%- board.id %>'">发表新主题</button>
+					</P>
+				</div>
+			<% } %>
 		</div>
 		<% include @footer %>
 	</div>

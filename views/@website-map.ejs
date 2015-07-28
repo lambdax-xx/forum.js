@@ -1,11 +1,18 @@
 <ul class="tree">
-	<li> <a href="/index.html">首页</a> <li>
-	<ul>
-		<% 
-			var boards = require('../models/boards');
-			var subs = boards.allSub();
-			for (var i = 0; i < subs.length; i++) { %>
-				<a href="/forum.html?bid=<%= subs[i].id %>"><%= subs[i].title %></a> 
-		 <% } %>
-	</ul>
+	<li> <a href="/index.html">首页</a> </li>
+	<li> <a href="/admin.html">管理</a> </li>
+	<li> 版块: </li>
+	<% function buildBoardsTree(boards) { 
+			if (boards.length) { %>
+			<ul> 
+				<% var i, board;
+					for (i = 0; i < boards.length; i++) {
+						board = boards[i]; 
+				%>
+						<li><a href="/forum.html?bid=<%= board.id %>"><%= board.title %></a></li>
+						<% buildBoardsTree(board.boards) %>
+				<% } %>
+			</ul>
+	<% } } %>
+	<% buildBoardsTree(ejs.boardsTree) %>
 </ul>

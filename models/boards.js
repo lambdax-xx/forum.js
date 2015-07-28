@@ -154,3 +154,25 @@ exports.editBoard = function (user, data, callback) {
 		});
 	});
 }
+
+function buildBoardsTree(outer, callback) {
+	selectInnerBoards(outer, function (boards) {
+		var n = 0;
+		var loop = function () {
+			if (n < boards.length) {
+				buildBoardsTree(boards[n].id, function (subs) {
+					boards[n].boards = subs;
+					n++;
+					loop();
+				});
+			} else {
+				callback(boards);
+			}
+		};
+		loop();
+	});
+}
+
+exports.boardsTree = function (callback) {
+	buildBoardsTree(undefined, callback);
+}

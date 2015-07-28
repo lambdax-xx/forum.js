@@ -7,14 +7,14 @@ var topics = require('../models/topics');
 
 router.get('/forum.html', function (req, res, next) {
 	if (!req.query.bid)
-		return res.render('notify', ejs.options(req, {message: '没有版块ID'}));
+		return res.ejs.render('notify', {message: '没有版块ID'});
 
 	boards.board(req.query.bid, function (error, board) {
 		if (error) 
-			return res.render('notify', ejs.options(req, {message: error}));
+			return res.ejs.render('notify', {message: error});
 
 		if (!board)
-			return res.render('notify', ejs.options(req, {message: "版块未找到"}));
+			return res.ejs.render('notify', {message: "版块未找到"});
 
 		var order;
 
@@ -30,52 +30,54 @@ router.get('/forum.html', function (req, res, next) {
 				order: order,
 			}, function (error, topics) {
 				if (error)
-					return res.render('notify', ejs.options(req, {message: error}));
+					return res.ejs.render('notify', {message: error});
 
 				board.topics = topics;
 
-				res.render('forum', ejs.options(req, { board: board }));
+				res.ejs.render('forum', { board: board });
 			});
 	});
 });
 
 router.get('/topic.html', function (req, res, next) {
 	if (!req.session.user)
-		return res.render('notify', ejs.options(req, {message: '没有登录'}));
+		return res.ejs.render('notify', {message: '没有登录'});
 
 	if (req.query.tid) {
 		topics.topic(req.query.tid, function (error, topic) {
 			if (error) 
-				return res.render('notify', ejs.options(req, {message: error}));
+				return res.ejs.render('notify', {message: error});
 
 			if (!topic)
-				return res.render('notify', ejs.options(req, {message: '主题未找到'}));
+				return res.ejs.render('notify', {message: '主题未找到'});
+
+			req.slot.topic = topic;
 
 			if (!req.session.user.isUpser && req.session.user.id != topic.author)
-				return res.render('notify', ejs.options(req, {message: '只有作者才能编辑主题'}));
+				return res.ejs.render('notify', {message: '只有作者才能编辑主题'});
 
 
-			res.render('topic', ejs.options(req, {topic: topic}));
+			res.ejs.render('topic', req, {topic: topic});
 		});
 	} else {
 		if (!req.query.bid)
-			return res.render('notify', ejs.options(req, {message: '没有板块ID'}));
+			return res.ejs.render('notify', {message: '没有板块ID'});
 
 		boards.board(req.query.bid, function (error, board) {
 			if (error) 
-				return res.render('notify', ejs.options(req, {message: error}));
+				return res.ejs.render('notify', {message: error});
 
 			if (!board)
-				return res.render('notify', ejs.options(req, {message: "版块未找到"}));
+				return res.ejs.render('notify', {message: "版块未找到"});
 
-			res.render('topic', ejs.options(req, {bid: req.query.bid}));
+			res.ejs.render('topic', {bid: req.query.bid});
 		});
 	}
 });
 
 router.post('/do/topic', function(req, res, next) {
 	if (!req.session.user)
-		return res.render('notify', ejs.options(req, {message: '没有登录'}));
+		return res.ejs.render('notify', {message: '没有登录'});
 
 	var buffer = '';
 
@@ -87,31 +89,31 @@ router.post('/do/topic', function(req, res, next) {
 		var data = helpers.parseMultipart(buffer);
 
 		if (!data.tid &&  !data.bid)
-			return res.render('notify', ejs.options(req, {message: '没有版块ID'}));
+			return res.ejs.render('notify', {message: '没有版块ID'});
 
 		if (data.tid) {
 			topics.internals.selectTopicById(data.tid, function (topic) {
 				if (!topic)
-					return res.render('notify', ejs.options(req, {message: '没有找到主题'}));
+					return res.ejs.render('notify', {message: '没有找到主题'});
 
 				if (!req.session.user.isUpser && req.session.user.id != topic.author)
-					return res.render('notify', ejs.options(req, {message: '只有主题作者才能编辑'}));
+					return res.ejs.render('notify', {message: '只有主题作者才能编辑'});
 
 				topics.editTopic(date.tid, data.headline, data.category, data.caption, data.content, data.type, function (error){
 					if (error)
-						return res.render('notify', ejs.options(req, {message: error}));
-					res.render('notify', ejs.options(req, {message: '主题编辑完成', jump: -2, refresh: true}));
+						return res.ejs.render('notify', {message: error});
+					res.ejs.render('notify', {message: '主题编辑完成', jump: -2, refresh: true});
 				});
 			});
 		} else {
 			boards.internals.selectBoardById(data.bid, function (board){
 				if (!board)
-					return res.render('notify', ejs.options(req, {message: '版块没有找到'}));
+					return res.ejs.render('notify', {message: '版块没有找到'});
 
 				topics.addTopic(data.bid, data.headline, req.session.user.id, data.category, data.caption, data.content, data.type, function (error) {
 					if (error)
-						return res.render('notify', ejs.options(req, {message: error}));
-					res.render('notify', ejs.options(req, {message: '新主题保存完成', jump: -2, refresh: true}));
+						return res.ejs.render('notify', {message: error});
+					res.ejs.render('notify', {message: '新主题保存完成', jump: -2, refresh: true});
 				});
 			});
 		}
@@ -119,3 +121,15 @@ router.post('/do/topic', function(req, res, next) {
 });
 
 module.exports = router;
+
+ejs.websitePath('/forum.html', function (req) {
+	return ejs.findBoardPathById(req.query.bid)
+});
+
+ejs.websitePath('/topic.html', function (req) {
+	if (req.slot.topic) {
+		return ejs.findBoardPathById(req.slot.topic.board).concat([{name: req.slot.topic.caption, url: req.url}]);
+	}
+	
+	return ejs.findBoardPathById(req.query.bid).concat([{name: '新主题', ur: req.url}]);
+});
